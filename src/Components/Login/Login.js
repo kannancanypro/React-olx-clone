@@ -1,14 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Logo from '../../olx-logo.png';
 import './Login.css';
+import { useNavigate } from 'react-router-dom'
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth'
+
 
 function Login() {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('')
+
+
+  var loginModel = {};
+  const signInFunc = async (e) => {
+    try {
+      e.preventDefault();
+      loginModel = {
+        "email": email,
+        "password": password
+      }
+      const auth = getAuth()
+      const { user } = await signInWithEmailAndPassword(auth, loginModel.email, loginModel.password)
+      console.log(user.toJSON())
+      if (user.uid) {
+       navigateToHome()
+      }
+    }
+    catch (error) {
+      console.log(error)
+      alert(error.message)
+    }
+  }
+
+  var navigate = useNavigate();
+  const navigateToHome = () => {
+    navigate('/home');
+  }
+
+
+
   return (
     <div>
       <div className="loginParentDiv">
         <img width="200px" height="200px" src={Logo}></img>
-        <form>
+        <form onSubmit={signInFunc}>
           <label htmlFor="fname">Email</label>
           <br />
           <input
@@ -16,7 +52,10 @@ function Login() {
             type="email"
             id="fname"
             name="email"
-            defaultValue="John"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value)
+            }}
           />
           <br />
           <label htmlFor="lname">Password</label>
@@ -26,7 +65,10 @@ function Login() {
             type="password"
             id="lname"
             name="password"
-            defaultValue="Doe"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value)
+            }}
           />
           <br />
           <br />

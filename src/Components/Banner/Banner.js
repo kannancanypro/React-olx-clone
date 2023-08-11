@@ -2,7 +2,9 @@ import React from 'react';
 
 import './Banner.css';
 import Arrow from '../../assets/Arrow'
+import { AuthContext } from '../../store/AppContext';
 function Banner() {
+
   return (
     <div className="bannerParentDiv">
       <div className="bannerChildDiv">
